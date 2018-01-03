@@ -1,0 +1,21 @@
+{
+  "name": "enum-util",
+  "version": "1.0.0",
+  "description": "Get keys and values of TypeScript enums during run-time",
+  "main": "dist/src/main/index.js",
+  "types": "dist/src/main/index.d.ts",
+  "scripts": {
+    "test": "ts-node ./src/test/test.ts",
+    "build": "(rm -r ./dist || true) && tsc -d"
+  },
+  "author": "anyhowstep",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^2.7.0-dev.20180103"
+  },
+  "devDependencies": {
+    "@types/tape": "^4.2.31",
+    "tape": "^4.8.0",
+    "ts-node": "^4.1.0"
+  }
+}
