@@ -19,6 +19,7 @@ enum Bar {
 }
 enumUtil.getKeys(Bar); //["B", "D", "F"]
 enumUtil.getValues(Bar); //["b", "d", "f"]
+enumUtil.extractValues(Bar, ["B", "b", "D", "d", "F", "f"]); //["b", "d", "f"]
 ```
 
 # License

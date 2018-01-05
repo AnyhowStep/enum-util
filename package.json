@@ -1,6 +1,6 @@
 {
   "name": "enum-util",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Get keys and values of TypeScript enums during run-time",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",

@@ -1,6 +1,19 @@
-export declare function getKeys(e: {}): string[];
-export declare function isStringArray(arr: (string[]) | (number[])): arr is string[];
-export declare function isNumberArray(arr: (string[]) | (number[])): arr is number[];
-export declare function getValues(e: {}): (string[]) | (number[]);
-export declare function getStringValues(e: {}): string[];
-export declare function getNumberValues(e: {}): number[];
+export declare enum Enum {
+}
+export declare function getKeys<E extends typeof Enum>(e: E): (keyof E)[];
+export declare function getValues<E extends typeof Enum>(e: E): (E[keyof E])[];
+export declare function isKey<E extends typeof Enum>(e: E, str: string): str is keyof E;
+export declare function isValue<E extends typeof Enum>(e: E, mixed: string | number): mixed is E[keyof E];
+export declare function extractValues<E extends typeof Enum>(e: E, arr: any[]): (E[keyof E])[];
+export declare class WrappedEnum<E extends typeof Enum> {
+    private readonly e;
+    private readonly keys;
+    private readonly values;
+    constructor(e: E);
+    getEnum(): E;
+    getKeys(): (keyof E)[];
+    getValues(): E[keyof E][];
+    isKey(str: string): str is keyof E;
+    isValue(mixed: string | number): mixed is E[keyof E];
+    extractValues(arr: any[]): (E[keyof E])[];
+}

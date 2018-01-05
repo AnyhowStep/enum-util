@@ -1,62 +1,74 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var Enum;
+(function (Enum) {
+})(Enum = exports.Enum || (exports.Enum = {}));
 function getKeys(e) {
     return Object.keys(e).filter((k) => {
         return !/^\d/.test(k);
     });
 }
 exports.getKeys = getKeys;
-function isStringArray(arr) {
-    if (arr.length == 0) {
-        return true; //Benefit of the doubt
-    }
-    return (typeof arr[0] == "string");
-}
-exports.isStringArray = isStringArray;
-function isNumberArray(arr) {
-    if (arr.length == 0) {
-        return true; //Benefit of the doubt
-    }
-    return (typeof arr[0] == "number");
-}
-exports.isNumberArray = isNumberArray;
 function getValues(e) {
     const keys = getKeys(e);
     const values = keys.map((k) => {
         return e[k];
     });
-    if (values.length == 0) {
-        return [];
-    }
-    if (typeof values[0] == "string") {
-        return values.filter((v) => {
-            return typeof v == "string";
-        });
-    }
-    else if (typeof values[0] == "number") {
-        return values.filter((v) => {
-            return typeof v == "number";
-        });
-    }
-    else {
-        throw new Error(`First element of enum was of type ${typeof values[0]}, expected string|number`);
-    }
+    return values;
 }
 exports.getValues = getValues;
-function getStringValues(e) {
-    const values = getValues(e);
-    if (!isStringArray(values)) {
-        throw new Error(`Expected a values of enum to be string`);
-    }
-    return values;
+function isKeyInternal(keys, str) {
+    return keys.indexOf(str) >= 0;
 }
-exports.getStringValues = getStringValues;
-function getNumberValues(e) {
-    const values = getValues(e);
-    if (!isNumberArray(values)) {
-        throw new Error(`Expected a values of enum to be number`);
-    }
-    return values;
+function isValueInternal(values, mixed) {
+    return values.indexOf(mixed) >= 0;
 }
-exports.getNumberValues = getNumberValues;
+function extractValuesInternal(values, arr) {
+    const result = [];
+    for (let i of arr) {
+        if (values.indexOf(i) >= 0) {
+            result.push(i);
+        }
+    }
+    return result;
+}
+function isKey(e, str) {
+    return isKeyInternal(getKeys(e), str);
+}
+exports.isKey = isKey;
+//Only string|number are allowed to be enum values
+function isValue(e, mixed) {
+    return isValueInternal(getValues(e), mixed);
+}
+exports.isValue = isValue;
+function extractValues(e, arr) {
+    return extractValuesInternal(getValues(e), arr);
+}
+exports.extractValues = extractValues;
+class WrappedEnum {
+    constructor(e) {
+        this.e = e;
+        this.keys = getKeys(e);
+        this.values = getValues(e);
+    }
+    getEnum() {
+        return this.e;
+    }
+    getKeys() {
+        return [...this.keys];
+    }
+    getValues() {
+        return [...this.values];
+    }
+    isKey(str) {
+        return isKeyInternal(this.keys, str);
+    }
+    isValue(mixed) {
+        return isValueInternal(this.keys, mixed);
+    }
+    extractValues(arr) {
+        return extractValuesInternal(this.values, arr);
+    }
+}
+exports.WrappedEnum = WrappedEnum;
 //# sourceMappingURL=util.js.map

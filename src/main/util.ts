@@ -1,55 +1,72 @@
-export function getKeys (e : {}) : string[] {
-    return Object.keys(e).filter((k) => {
+export enum Enum {
+}
+
+export function getKeys<E extends typeof Enum> (e : E) : (keyof E)[] {
+    return Object.keys(e).filter((k) : k is keyof E => {
         return !/^\d/.test(k)
     });
 }
 
-export function isStringArray (arr : (string[])|(number[])) : arr is string[] {
-    if (arr.length == 0) {
-        return true; //Benefit of the doubt
-    }
-    return (typeof arr[0] == "string");
-}
-
-export function isNumberArray (arr : (string[])|(number[])) : arr is number[] {
-    if (arr.length == 0) {
-        return true; //Benefit of the doubt
-    }
-    return (typeof arr[0] == "number");
-}
-
-export function getValues (e : {}) : (string[])|(number[]) {
+export function getValues<E extends typeof Enum> (e : E) : (E[keyof E])[] {
     const keys = getKeys(e);
     const values = keys.map((k) => {
-        return (e as any)[k];
+        return e[k];
     });
-    if (values.length == 0) {
-        return [];
-    }
-    if (typeof values[0] == "string") {
-        return values.filter((v) : v is string => {
-            return typeof v == "string";
-        });
-    } else if (typeof values[0] == "number") {
-        return values.filter((v) : v is number => {
-            return typeof v == "number";
-        });
-    } else {
-        throw new Error(`First element of enum was of type ${typeof values[0]}, expected string|number`);
-    }
+    return values;
 }
 
-export function getStringValues (e : {}) : string[] {
-    const values = getValues(e);
-    if (!isStringArray(values)) {
-        throw new Error(`Expected a values of enum to be string`);
-    }
-    return values;
+function isKeyInternal<E extends typeof Enum> (keys : (keyof E)[], str : string) : str is keyof E {
+    return keys.indexOf(str as any) >= 0;
 }
-export function getNumberValues (e : {}) : number[] {
-    const values = getValues(e);
-    if (!isNumberArray(values)) {
-        throw new Error(`Expected a values of enum to be number`);
+function isValueInternal<E extends typeof Enum> (values : (E[keyof E])[], mixed : string|number) : mixed is E[keyof E] {
+    return values.indexOf(mixed) >= 0;
+}
+function extractValuesInternal<E extends typeof Enum> (values : (E[keyof E])[], arr : any[]) : (E[keyof E])[] {
+    const result : (E[keyof E])[] = [];
+    for (let i of arr) {
+        if (values.indexOf(i) >= 0) {
+            result.push(i);
+        }
     }
-    return values;
+    return result;
+}
+
+export function isKey<E extends typeof Enum> (e : E, str : string) : str is keyof E {
+    return isKeyInternal(getKeys(e), str);
+}
+//Only string|number are allowed to be enum values
+export function isValue<E extends typeof Enum> (e : E, mixed : string|number) : mixed is E[keyof E] {
+    return isValueInternal(getValues(e), mixed);
+}
+export function extractValues<E extends typeof Enum> (e : E, arr : any[]) : (E[keyof E])[] {
+    return extractValuesInternal(getValues(e), arr);
+}
+
+export class WrappedEnum<E extends typeof Enum> {
+    private readonly e : E;
+    private readonly keys   : (keyof E)[];
+    private readonly values : (E[keyof E])[];
+    public constructor (e : E) {
+        this.e = e;
+        this.keys   = getKeys(e);
+        this.values = getValues(e);
+    }
+    public getEnum () {
+        return this.e;
+    }
+    public getKeys () {
+        return [...this.keys];
+    }
+    public getValues () {
+        return [...this.values];
+    }
+    public isKey (str : string) : str is keyof E {
+        return isKeyInternal(this.keys, str);
+    }
+    public isValue (mixed : string|number) : mixed is E[keyof E] {
+        return isValueInternal(this.keys, mixed);
+    }
+    public extractValues (arr : any[]) : (E[keyof E])[] {
+        return extractValuesInternal(this.values, arr);
+    }
 }
