@@ -6,7 +6,8 @@
   "types": "dist/src/main/index.d.ts",
   "scripts": {
     "test": "ts-node ./src/test/test.ts",
-    "build": "(rm -r ./dist || true) && tsc -d"
+    "build": "(rm -r ./dist || true) && tsc -d",
+	"postversion": "git push && git push --tags"
   },
   "author": "anyhowstep",
   "license": "ISC",
