@@ -18,7 +18,7 @@ export function getValues<E extends typeof Enum> (e : E) : (E[keyof E])[] {
 function isKeyInternal<E extends typeof Enum> (keys : (keyof E)[], str : string) : str is keyof E {
     return keys.indexOf(str as any) >= 0;
 }
-function isValueInternal<E extends typeof Enum> (values : (E[keyof E])[], mixed : string|number) : mixed is E[keyof E] {
+function isValueInternal<E extends typeof Enum> (values : (E[keyof E])[], mixed : any) : mixed is E[keyof E] {
     return values.indexOf(mixed) >= 0;
 }
 function extractValuesInternal<E extends typeof Enum> (values : (E[keyof E])[], arr : any[]) : (E[keyof E])[] {
@@ -35,7 +35,7 @@ export function isKey<E extends typeof Enum> (e : E, str : string) : str is keyo
     return isKeyInternal(getKeys(e), str);
 }
 //Only string|number are allowed to be enum values
-export function isValue<E extends typeof Enum> (e : E, mixed : string|number) : mixed is E[keyof E] {
+export function isValue<E extends typeof Enum> (e : E, mixed : any) : mixed is E[keyof E] {
     return isValueInternal(getValues(e), mixed);
 }
 export function extractValues<E extends typeof Enum> (e : E, arr : any[]) : (E[keyof E])[] {
@@ -63,7 +63,7 @@ export class WrappedEnum<E extends typeof Enum> {
     public isKey (str : string) : str is keyof E {
         return isKeyInternal(this.keys, str);
     }
-    public isValue (mixed : string|number) : mixed is E[keyof E] {
+    public isValue (mixed : any) : mixed is E[keyof E] {
         return isValueInternal(this.keys, mixed);
     }
     public extractValues (arr : any[]) : (E[keyof E])[] {
