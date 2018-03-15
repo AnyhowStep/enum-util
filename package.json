@@ -7,7 +7,7 @@
   "scripts": {
     "test": "ts-node ./src/test/test.ts",
     "build": "(rm -r ./dist || true) && tsc -d",
-	"postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags"
   },
   "author": "anyhowstep",
   "license": "ISC",
