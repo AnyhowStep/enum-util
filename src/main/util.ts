@@ -15,6 +15,10 @@ export function getValues<E extends typeof Enum> (e : E) : (E[keyof E])[] {
     return values;
 }
 
+export function toEnumValue<E extends typeof Enum> (val: any, e : E) : E[keyof E] | undefined {
+    return getValues( e ).find( v => v === val );
+}
+
 function isKeyInternal<E extends typeof Enum> (keys : (keyof E)[], str : string) : str is keyof E {
     return keys.indexOf(str as any) >= 0;
 }

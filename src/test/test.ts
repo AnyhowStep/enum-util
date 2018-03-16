@@ -61,6 +61,50 @@ tape("values", (t) => {
     );
     t.end();
 });
+tape("enumValue", (t) => {
+    enum Foo {
+        A,
+        C,
+        E
+    }
+    enum Bar {
+        B = "b",
+        D = "d",
+        F = "f"
+    }
+    enum Baz {
+        G = 0,
+        I = 2,
+        K = 4
+    }
+
+    t.equals(
+        enumUtil.toEnumValue( 0, Foo ), // default
+        Foo.A
+    );
+    t.equals(
+        enumUtil.toEnumValue( 3, Foo ),
+        undefined
+    );
+    t.equals(
+        enumUtil.toEnumValue( "b", Bar ),
+        Bar.B
+    );
+    t.equals(
+        enumUtil.toEnumValue( "x", Bar ),
+        undefined
+    );
+    t.equals(
+        enumUtil.toEnumValue( 0, Baz ),
+        Baz.G
+    );
+    t.equals(
+        enumUtil.toEnumValue( 5, Baz ),
+        undefined
+    );
+    t.end();
+});
+
 tape("isKey", (t) => {
     enum Foo {
         A,
