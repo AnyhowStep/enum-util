@@ -17,6 +17,10 @@ function getValues(e) {
     return values;
 }
 exports.getValues = getValues;
+function toEnumValue(val, e) {
+    return getValues(e).find(v => v === val);
+}
+exports.toEnumValue = toEnumValue;
 function isKeyInternal(keys, str) {
     return keys.indexOf(str) >= 0;
 }
