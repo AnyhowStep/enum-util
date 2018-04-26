@@ -311,3 +311,134 @@ tape("extract-values", (t) => {
     );
     t.end();
 });
+tape("isValue", (t) => {
+    enum Foo {
+        BAR = "bar",
+        ZOO = "zoo"
+    }
+
+    enum X {
+        EVEN = 0,
+        ODD = 1
+    }
+
+    const rawFoo : string = "bar";
+    if (enumUtil.isValue(Foo, rawFoo)) {
+        const foo : Foo = rawFoo; //OK
+        t.pass("Foo: " + foo);
+    } else {
+        t.fail("bar is of type Foo, but isValue() says it is not");
+    }
+
+    const rawX : number = 1;
+    if (enumUtil.isValue(X, rawX)) {
+        const x : X = rawX; //OK
+        t.pass("X: " + x);
+    } else {
+        t.fail("1 is of type X, but isValue() says it is not");
+    }
+
+    if (!enumUtil.isValue(Foo, "wrong")) {
+        t.pass("wrong is not a value of Foo");
+    } else {
+        t.fail("wrong is not of type Foo, but isValue() says it is");
+    }
+
+    t.end();
+});
+tape("to-string-enum", (t) => {
+    enum Foo {
+        A,
+        C,
+        E
+    }
+    enum Bar {
+        B = "b",
+        D = "d",
+        F = "f"
+    }
+    enum Baz {
+        G = 0,
+        I = 2,
+        K = 4
+    }
+    t.deepEquals(
+        enumUtil.toStringEnum(Foo),
+        {
+            A : "A",
+            C : "C",
+            E : "E",
+        }
+    );
+    t.deepEquals(
+        enumUtil.toStringEnum(Bar),
+        {
+            B : "B",
+            D : "D",
+            F : "F",
+        }
+    );
+    t.deepEquals(
+        enumUtil.toStringEnum(Baz),
+        {
+            G : "G",
+            I : "I",
+            K : "K",
+        }
+    );
+    t.end();
+});
+tape("to-key", (t) => {
+    enum Foo {
+        A,
+        C,
+        E
+    }
+    enum Bar {
+        B = "b",
+        D = "d",
+        F = "f"
+    }
+    enum Baz {
+        G = 0,
+        I = 2,
+        K = 4
+    }
+    t.deepEquals(
+        enumUtil.toKey(Foo, 0),
+        "A"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Foo, 1),
+        "C"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Foo, 2),
+        "E"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Bar, "b"),
+        "B"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Bar, "d"),
+        "D"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Bar, "f"),
+        "F"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Baz, 0),
+        "G"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Baz, 2),
+        "I"
+    );
+    t.deepEquals(
+        enumUtil.toKey(Baz, 4),
+        "K"
+    );
+    t.end();
+});
