@@ -4,7 +4,8 @@ var Enum;
 (function (Enum) {
 })(Enum = exports.Enum || (exports.Enum = {}));
 function getKeys(e) {
-    return Object.keys(e).filter((k) => {
+    return Object.keys(e)
+        .filter((k) => {
         return !/^\d/.test(k);
     });
 }

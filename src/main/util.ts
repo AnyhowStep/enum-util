@@ -4,9 +4,10 @@ export enum Enum {
 export type StringEnum<E extends typeof Enum> = { [key in keyof E] : key };
 
 export function getKeys<E extends typeof Enum> (e : E) : (keyof E)[] {
-    return Object.keys(e).filter((k) : k is keyof E => {
-        return !/^\d/.test(k)
-    });
+    return Object.keys(e)
+        .filter<keyof E>((k) : k is keyof E => {
+            return !/^\d/.test(k);
+        });
 }
 
 export function getValues<E extends typeof Enum> (e : E) : (E[keyof E])[] {
@@ -16,7 +17,6 @@ export function getValues<E extends typeof Enum> (e : E) : (E[keyof E])[] {
     });
     return values;
 }
-
 function isKeyInternal<E extends typeof Enum> (keys : (keyof E)[], str : string) : str is keyof E {
     return keys.indexOf(str as any) >= 0;
 }
@@ -39,7 +39,10 @@ function extractValuesInternal<E extends typeof Enum> (values : (E[keyof E])[], 
     }
     return result;
 }
-function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value : any) : (keyof E)|undefined{
+function toKeyInternal<E extends typeof Enum, K extends keyof E> (e : E, keys : (keyof E)[], value : E[K]) : K;
+function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value : E[keyof E]) : keyof E;
+function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value : any) : (keyof E)|undefined;
+function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value : any) : (keyof E)|undefined {
     for (let k of keys) {
         if (e[k] === value) {
             return k;
@@ -61,6 +64,9 @@ export function isValue<E extends typeof Enum> (e : E, mixed : any) : mixed is E
 export function extractValues<E extends typeof Enum> (e : E, arr : any[]) : (E[keyof E])[] {
     return extractValuesInternal(getValues(e), arr);
 }
+export function toKey<E extends typeof Enum, K extends keyof E> (e : E, value : E[K]) : K;
+export function toKey<E extends typeof Enum> (e : E, value : E[keyof E]) : keyof E;
+export function toKey<E extends typeof Enum> (e : E, mixed : any) : (keyof E)|undefined;
 export function toKey<E extends typeof Enum> (e : E, mixed : any) : (keyof E)|undefined {
     return toKeyInternal(e, getKeys(e), mixed);
 }
@@ -95,6 +101,9 @@ export class WrappedEnum<E extends typeof Enum> {
     public extractValues (arr : any[]) : (E[keyof E])[] {
         return extractValuesInternal(this.values, arr);
     }
+    public toKey<K extends keyof E> (mixed : E[K]) : K;
+    public toKey (mixed : E[keyof E]) : keyof E;
+    public toKey (mixed : any) : (keyof E)|undefined;
     public toKey (mixed : any) : (keyof E)|undefined {
         return toKeyInternal(this.e, this.keys, mixed);
     }
