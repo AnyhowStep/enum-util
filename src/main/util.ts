@@ -1,7 +1,7 @@
 export enum Enum {
 }
 
-export type StringKeyOf<T> = Exclude<keyof T, number|symbol>;
+export type StringKeyOf<T> = Extract<keyof T, string>;
 
 export type StringEnum<E extends typeof Enum> = { [key in StringKeyOf<E>] : key };
 

@@ -1,6 +1,6 @@
 export declare enum Enum {
 }
-export declare type StringKeyOf<T> = Exclude<keyof T, number | symbol>;
+export declare type StringKeyOf<T> = Extract<keyof T, string>;
 export declare type StringEnum<E extends typeof Enum> = {
     [key in StringKeyOf<E>]: key;
 };
@@ -19,8 +19,8 @@ export declare class WrappedEnum<E extends typeof Enum> {
     private readonly values;
     constructor(e: E);
     getEnum(): E;
-    getKeys(): Exclude<keyof E, number | symbol>[];
-    getValues(): E[Exclude<keyof E, number | symbol>][];
+    getKeys(): Extract<keyof E, string>[];
+    getValues(): E[Extract<keyof E, string>][];
     isKey(str: string): str is StringKeyOf<E>;
     toStringEnum(): StringEnum<E>;
     isValue(mixed: any): mixed is E[StringKeyOf<E>];
