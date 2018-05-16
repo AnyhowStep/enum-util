@@ -1,37 +1,39 @@
 export enum Enum {
 }
 
-export type StringEnum<E extends typeof Enum> = { [key in keyof E] : key };
+export type StringKeyOf<T> = Exclude<keyof T, number|symbol>;
 
-export function getKeys<E extends typeof Enum> (e : E) : (keyof E)[] {
+export type StringEnum<E extends typeof Enum> = { [key in StringKeyOf<E>] : key };
+
+export function getKeys<E extends typeof Enum> (e : E) : (StringKeyOf<E>)[] {
     return Object.keys(e)
-        .filter<keyof E>((k) : k is keyof E => {
+        .filter<StringKeyOf<E>>((k) : k is StringKeyOf<E> => {
             return !/^\d/.test(k);
         });
 }
 
-export function getValues<E extends typeof Enum> (e : E) : (E[keyof E])[] {
+export function getValues<E extends typeof Enum> (e : E) : (E[StringKeyOf<E>])[] {
     const keys = getKeys(e);
     const values = keys.map((k) => {
         return e[k];
     });
     return values;
 }
-function isKeyInternal<E extends typeof Enum> (keys : (keyof E)[], str : string) : str is keyof E {
+function isKeyInternal<E extends typeof Enum> (keys : (StringKeyOf<E>)[], str : string) : str is StringKeyOf<E> {
     return keys.indexOf(str as any) >= 0;
 }
-function toStringEnumInternal<E extends typeof Enum> (keys : (keyof E)[]) : StringEnum<E> {
+function toStringEnumInternal<E extends typeof Enum> (keys : (StringKeyOf<E>)[]) : StringEnum<E> {
     const result : Partial<StringEnum<E>> = {};
     for (let k of keys) {
         result[k] = k;
     }
     return result as any;
 }
-function isValueInternal<E extends typeof Enum> (values : (E[keyof E])[], mixed : any) : mixed is E[keyof E] {
+function isValueInternal<E extends typeof Enum> (values : (E[StringKeyOf<E>])[], mixed : any) : mixed is E[StringKeyOf<E>] {
     return values.indexOf(mixed) >= 0;
 }
-function extractValuesInternal<E extends typeof Enum> (values : (E[keyof E])[], arr : any[]) : (E[keyof E])[] {
-    const result : (E[keyof E])[] = [];
+function extractValuesInternal<E extends typeof Enum> (values : (E[StringKeyOf<E>])[], arr : any[]) : (E[StringKeyOf<E>])[] {
+    const result : (E[StringKeyOf<E>])[] = [];
     for (let i of arr) {
         if (values.indexOf(i) >= 0) {
             result.push(i);
@@ -39,10 +41,10 @@ function extractValuesInternal<E extends typeof Enum> (values : (E[keyof E])[], 
     }
     return result;
 }
-function toKeyInternal<E extends typeof Enum, K extends keyof E> (e : E, keys : (keyof E)[], value : E[K]) : K;
-function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value : E[keyof E]) : keyof E;
-function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value : any) : (keyof E)|undefined;
-function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value : any) : (keyof E)|undefined {
+function toKeyInternal<E extends typeof Enum, K extends StringKeyOf<E>> (e : E, keys : (StringKeyOf<E>)[], value : E[K]) : K;
+function toKeyInternal<E extends typeof Enum> (e : E, keys : (StringKeyOf<E>)[], value : E[StringKeyOf<E>]) : StringKeyOf<E>;
+function toKeyInternal<E extends typeof Enum> (e : E, keys : (StringKeyOf<E>)[], value : any) : (StringKeyOf<E>)|undefined;
+function toKeyInternal<E extends typeof Enum> (e : E, keys : (StringKeyOf<E>)[], value : any) : (StringKeyOf<E>)|undefined {
     for (let k of keys) {
         if (e[k] === value) {
             return k;
@@ -51,30 +53,30 @@ function toKeyInternal<E extends typeof Enum> (e : E, keys : (keyof E)[], value 
     return undefined;
 }
 
-export function isKey<E extends typeof Enum> (e : E, str : string) : str is keyof E {
+export function isKey<E extends typeof Enum> (e : E, str : string) : str is StringKeyOf<E> {
     return isKeyInternal(getKeys(e), str);
 }
 export function toStringEnum<E extends typeof Enum> (e : E) : StringEnum<E> {
     return toStringEnumInternal(getKeys(e));
 }
 //Only string|number are allowed to be enum values
-export function isValue<E extends typeof Enum> (e : E, mixed : any) : mixed is E[keyof E] {
+export function isValue<E extends typeof Enum> (e : E, mixed : any) : mixed is E[StringKeyOf<E>] {
     return isValueInternal(getValues(e), mixed);
 }
-export function extractValues<E extends typeof Enum> (e : E, arr : any[]) : (E[keyof E])[] {
+export function extractValues<E extends typeof Enum> (e : E, arr : any[]) : (E[StringKeyOf<E>])[] {
     return extractValuesInternal(getValues(e), arr);
 }
-export function toKey<E extends typeof Enum, K extends keyof E> (e : E, value : E[K]) : K;
-export function toKey<E extends typeof Enum> (e : E, value : E[keyof E]) : keyof E;
-export function toKey<E extends typeof Enum> (e : E, mixed : any) : (keyof E)|undefined;
-export function toKey<E extends typeof Enum> (e : E, mixed : any) : (keyof E)|undefined {
+export function toKey<E extends typeof Enum, K extends StringKeyOf<E>> (e : E, value : E[K]) : K;
+export function toKey<E extends typeof Enum> (e : E, value : E[StringKeyOf<E>]) : StringKeyOf<E>;
+export function toKey<E extends typeof Enum> (e : E, mixed : any) : (StringKeyOf<E>)|undefined;
+export function toKey<E extends typeof Enum> (e : E, mixed : any) : (StringKeyOf<E>)|undefined {
     return toKeyInternal(e, getKeys(e), mixed);
 }
 
 export class WrappedEnum<E extends typeof Enum> {
     private readonly e : E;
-    private readonly keys   : (keyof E)[];
-    private readonly values : (E[keyof E])[];
+    private readonly keys   : (StringKeyOf<E>)[];
+    private readonly values : (E[StringKeyOf<E>])[];
     public constructor (e : E) {
         this.e = e;
         this.keys   = getKeys(e);
@@ -89,22 +91,22 @@ export class WrappedEnum<E extends typeof Enum> {
     public getValues () {
         return [...this.values];
     }
-    public isKey (str : string) : str is keyof E {
+    public isKey (str : string) : str is StringKeyOf<E> {
         return isKeyInternal(this.keys, str);
     }
     public toStringEnum () : StringEnum<E> {
         return toStringEnumInternal(this.keys);
     }
-    public isValue (mixed : any) : mixed is E[keyof E] {
+    public isValue (mixed : any) : mixed is E[StringKeyOf<E>] {
         return isValueInternal(this.keys, mixed);
     }
-    public extractValues (arr : any[]) : (E[keyof E])[] {
+    public extractValues (arr : any[]) : (E[StringKeyOf<E>])[] {
         return extractValuesInternal(this.values, arr);
     }
-    public toKey<K extends keyof E> (mixed : E[K]) : K;
-    public toKey (mixed : E[keyof E]) : keyof E;
-    public toKey (mixed : any) : (keyof E)|undefined;
-    public toKey (mixed : any) : (keyof E)|undefined {
+    public toKey<K extends StringKeyOf<E>> (mixed : E[K]) : K;
+    public toKey (mixed : E[StringKeyOf<E>]) : StringKeyOf<E>;
+    public toKey (mixed : any) : (StringKeyOf<E>)|undefined;
+    public toKey (mixed : any) : (StringKeyOf<E>)|undefined {
         return toKeyInternal(this.e, this.keys, mixed);
     }
 }

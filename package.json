@@ -15,7 +15,7 @@
     "url": "https://github.com/AnyhowStep/enum-util"
   },
   "dependencies": {
-    "typescript": "^2.8.3"
+    "typescript": "^2.9.0-dev.20180516"
   },
   "devDependencies": {
     "@types/tape": "^4.2.31",
