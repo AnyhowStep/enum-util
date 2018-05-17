@@ -41,6 +41,15 @@ function extractValuesInternal<E extends typeof Enum> (values : (E[StringKeyOf<E
     }
     return result;
 }
+function toKeyInternal<E extends typeof Enum, V extends number|string>(e: E, keys : (StringKeyOf<E>)[], value: V) : (
+    {
+        [key in StringKeyOf<E>] : (
+            E[key] extends V ?
+                key :
+                never
+        )
+    }[StringKeyOf<E>]
+);
 function toKeyInternal<E extends typeof Enum, K extends StringKeyOf<E>> (e : E, keys : (StringKeyOf<E>)[], value : E[K]) : K;
 function toKeyInternal<E extends typeof Enum> (e : E, keys : (StringKeyOf<E>)[], value : E[StringKeyOf<E>]) : StringKeyOf<E>;
 function toKeyInternal<E extends typeof Enum> (e : E, keys : (StringKeyOf<E>)[], value : any) : (StringKeyOf<E>)|undefined;
@@ -66,6 +75,15 @@ export function isValue<E extends typeof Enum> (e : E, mixed : any) : mixed is E
 export function extractValues<E extends typeof Enum> (e : E, arr : any[]) : (E[StringKeyOf<E>])[] {
     return extractValuesInternal(getValues(e), arr);
 }
+export function toKey<E extends typeof Enum, V extends number|string>(e: E, value: V) : (
+    {
+        [key in StringKeyOf<E>] : (
+            E[key] extends V ?
+                key :
+                never
+        )
+    }[StringKeyOf<E>]
+);
 export function toKey<E extends typeof Enum, K extends StringKeyOf<E>> (e : E, value : E[K]) : K;
 export function toKey<E extends typeof Enum> (e : E, value : E[StringKeyOf<E>]) : StringKeyOf<E>;
 export function toKey<E extends typeof Enum> (e : E, mixed : any) : (StringKeyOf<E>)|undefined;
@@ -103,6 +121,15 @@ export class WrappedEnum<E extends typeof Enum> {
     public extractValues (arr : any[]) : (E[StringKeyOf<E>])[] {
         return extractValuesInternal(this.values, arr);
     }
+    public toKey<V extends number|string>(mixed: V) : (
+        {
+            [key in StringKeyOf<E>] : (
+                E[key] extends V ?
+                    key :
+                    never
+            )
+        }[StringKeyOf<E>]
+    );
     public toKey<K extends StringKeyOf<E>> (mixed : E[K]) : K;
     public toKey (mixed : E[StringKeyOf<E>]) : StringKeyOf<E>;
     public toKey (mixed : any) : (StringKeyOf<E>)|undefined;
