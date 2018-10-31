@@ -69,6 +69,10 @@ function toKey(e, mixed) {
     return toKeyInternal(e, getKeys(e), mixed);
 }
 exports.toKey = toKey;
+function getKeyCount(e) {
+    return getKeys(e).length;
+}
+exports.getKeyCount = getKeyCount;
 class WrappedEnum {
     constructor(e) {
         this.e = e;
@@ -98,6 +102,9 @@ class WrappedEnum {
     }
     toKey(mixed) {
         return toKeyInternal(this.e, this.keys, mixed);
+    }
+    getKeyCount() {
+        return this.keys.length;
     }
 }
 exports.WrappedEnum = WrappedEnum;

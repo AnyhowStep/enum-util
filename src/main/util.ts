@@ -90,6 +90,9 @@ export function toKey<E extends typeof Enum> (e : E, mixed : any) : (StringKeyOf
 export function toKey<E extends typeof Enum> (e : E, mixed : any) : (StringKeyOf<E>)|undefined {
     return toKeyInternal(e, getKeys(e), mixed);
 }
+export function getKeyCount<E extends typeof Enum> (e : E) : number {
+    return getKeys(e).length;
+}
 
 export class WrappedEnum<E extends typeof Enum> {
     private readonly e : E;
@@ -135,5 +138,8 @@ export class WrappedEnum<E extends typeof Enum> {
     public toKey (mixed : any) : (StringKeyOf<E>)|undefined;
     public toKey (mixed : any) : (StringKeyOf<E>)|undefined {
         return toKeyInternal(this.e, this.keys, mixed);
+    }
+    public getKeyCount () : number {
+        return this.keys.length;
     }
 }
