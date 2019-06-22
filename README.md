@@ -22,6 +22,8 @@ enumUtil.getValues(Bar); //["b", "d", "f"]
 enumUtil.isKey(Bar, "B"); //true
 enumUtil.isValue(Bar, "b"); //true
 enumUtil.extractValues(Bar, ["B", "b", "D", "d", "F", "f"]); //["b", "d", "f"]
+enumUtil.toKey(Bar, "b"); //"B"
+enumUtil.getKeyCount(Bar); //3
 
 enum Foo {
     A = 0,
