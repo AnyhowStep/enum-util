@@ -1,6 +1,6 @@
 {
   "name": "enum-util",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Get keys and values of TypeScript enums during run-time",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
@@ -17,6 +17,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/tape": "^4.2.31",
+    "diff": "^3.5.0",
     "tape": "^4.8.0",
     "ts-node": "^4.1.0",
     "typescript": "^3.5.1"
