@@ -16,6 +16,7 @@ export declare function toKey<E extends typeof Enum, V extends number | string>(
 export declare function toKey<E extends typeof Enum, K extends StringKeyOf<E>>(e: E, value: E[K]): K;
 export declare function toKey<E extends typeof Enum>(e: E, value: E[StringKeyOf<E>]): StringKeyOf<E>;
 export declare function toKey<E extends typeof Enum>(e: E, mixed: any): (StringKeyOf<E>) | undefined;
+export declare function getKeyCount<E extends typeof Enum>(e: E): number;
 export declare class WrappedEnum<E extends typeof Enum> {
     private readonly e;
     private readonly keys;
@@ -34,4 +35,5 @@ export declare class WrappedEnum<E extends typeof Enum> {
     toKey<K extends StringKeyOf<E>>(mixed: E[K]): K;
     toKey(mixed: E[StringKeyOf<E>]): StringKeyOf<E>;
     toKey(mixed: any): (StringKeyOf<E>) | undefined;
+    getKeyCount(): number;
 }
